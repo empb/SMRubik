@@ -3,6 +3,8 @@ from rubik_solver import utils
 import numpy as np
 import re
 
+# Uses https://pypi.org/project/rubik-solver
+
 # Cube string from Processing program
 scube = sys.argv[1]
 
@@ -57,8 +59,5 @@ for match in matches:
 matches = re.findall(r"\w2", moves)
 for match in matches:
     moves = moves.replace(match, match[0]+match[0])
+    
 print(moves)
-
-
-
-

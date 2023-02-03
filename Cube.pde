@@ -95,7 +95,7 @@ class Cube {
     // Get the string of the cube
     String scube = cube.cubeToString();
     StringList stdoutt = new StringList(), stderrr = new StringList();
-    int r = exec(stdoutt, stderrr, "python3", sketchPath()+"/python/solveCube.py", scube);
+    int r = exec(stdoutt, stderrr, "python3.8", sketchPath()+"/python/solveCube.py", scube);
     if (r != 0) {
       println("Error while calling solveCube.py");
       return null;
@@ -105,6 +105,34 @@ class Cube {
       println(stderrr);
     }
     return stdoutt.get(0);
+  }
+  
+  // Scans the cube with the camera as input. Returns a string of the moves to solve the cube.
+  // Uses Python script scanCube.py
+  String scanCube() {
+    if (this.isMoving()) return null;  // If cube is moving, return
+    StringList stdoutt = new StringList(), stderrr = new StringList();
+    int r = exec(stdoutt, stderrr, "python3.8", sketchPath()+"/python/scanCube.py");
+    if (r != 0) {
+      println("Error while calling scanCube.py:"); 
+      println(stderrr.get(stderrr.size() - 1));
+      return null;
+    }
+    if (stderrr.size() != 0) {
+      println("Errors while solving the cube:");
+      println(stderrr);
+    }
+    if (stdoutt.size() > 1) {
+      String solutionAlg = stdoutt.get(1);
+      // To take the cube to this state, we solve it and then
+      // we apply this alogrithm in inverse order
+      if (!this.isSolved()) {
+        String currentSol = cube.solveCube();
+        applyAlgorithm(currentSol.toCharArray(), cube, 0.4);
+      }
+      applyBackwardsAlgorithm(solutionAlg.toCharArray(), this, 0.4);
+      return solutionAlg;
+    } else return null;
   }
   
   // Generates a string of the faces of the rubiks cube
@@ -175,6 +203,10 @@ class Cube {
   
   boolean isMoving() {
     return !moves.isEmpty(); 
+  }
+  
+  float getSpeed() {
+    return moveSpeed;
   }
   
   void setSpeed(float speed) {

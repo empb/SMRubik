@@ -19,14 +19,28 @@ void applyKey(char pKey, Cube cube) {
 }
 
 // Applies rubik algorithm
-void applyAlgorithm(char[] algorithm, Cube cube) {
+void applyAlgorithm(char[] algorithm, Cube cube, Float spd) {
+  Float prevSpeed = cube.getSpeed();
+  cube.setSpeed(spd);
   for (char move : algorithm) {
     applyKey(move, cube);
   }
+  cube.setSpeed(prevSpeed);
+}
+
+// Applies rubik algorithm backwards
+void applyBackwardsAlgorithm(char[] algorithm, Cube cube, Float spd) {
+  Float prevSpeed = cube.getSpeed();
+  cube.setSpeed(spd);
+  for (int i = algorithm.length-1; i>=0; i--) {
+    applyKey(oppMove(algorithm[i]), cube);
+  }
+  cube.setSpeed(prevSpeed);
 }
 
 // Scrambles rubiks cube
 void scrambleCube(Cube cube) {
+  Float prevSpeed = cube.getSpeed();
   cube.setSpeed(0.3);    // Fast moves to scramble
   int maxmoves = 40;
   char[] posMoves = {'U', 'u', 'L', 'l', 'F', 'f', 'R', 'r', 'B', 'b', 'D', 'd'};
@@ -42,7 +56,7 @@ void scrambleCube(Cube cube) {
   for (char move : randomMoves) {
     applyKey(move, cube);
   }
-  cube.setSpeed(0.05);    // Normal speed
+  cube.setSpeed(prevSpeed);    // Normal speed
 }
 
 // Returns the same move but in the opposite clockwise 

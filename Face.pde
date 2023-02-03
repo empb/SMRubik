@@ -39,11 +39,11 @@ class Face {
   
   int stringToColor(String sscol) {
     switch(sscol) {
-      case "y": return color(255, 255, 0); 
-      case "b": return color(0, 0, 255);
-      case "r": return color(255, 0, 0);
-      case "g": return color(0, 255, 0);
-      case "o": return color(255, 150, 0);
+      case "y": return color(255, 243, 0); 
+      case "b": return color(62, 50, 252);
+      case "r": return color(241, 55, 1);
+      case "g": return color(18, 211, 33);
+      case "o": return color(255, 151, 0);
       case "w": return color(255, 255, 255);
     }
       return color(0);

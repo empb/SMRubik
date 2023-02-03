@@ -6,7 +6,7 @@ PeasyCam cam;
 
 Cube cube;             // The Rubik's Cube
 
-char[] solAlg;         // The algorithm to solve the cube 
+char[] solAlg;         // The algorithm to solve the cube
 
 int cMove;             // Index of the current move in solAlg
 
@@ -55,14 +55,36 @@ void keyPressed() {
           cMove = 0;
         }
       } else {
-        applyAlgorithm(subset(solAlg, cMove), cube);  // Controls function
+        applyAlgorithm(subset(solAlg, cMove), cube, 0.025);  // Controls function
         solAlg = null;
       }
+      break;
+    case 'S':
+        String solMoves = cube.scanCube();
+        if (solMoves != null) {
+          solAlg = solMoves.toCharArray();
+          cMove = 0;
+        }
       break;
     default:
       solAlg = null;
       applyKey(key, cube);    // Controls function
   }
+}
+
+// Converts the array of chars of the solution to a string 
+// using the standart Rubiks notation
+String algToStandardStr(char[] alg) {
+  String strAlg = "";
+  for(int i = 0; i < alg.length; i++) {
+    // If its lowercase move, should add an apostrophe  
+    if(Character.isLowerCase(alg[i])) {
+      strAlg += Character.toUpperCase(alg[i]);
+      strAlg += '\'';
+    } else if (i > 0 && alg[i] == alg[i-1]) strAlg += '2';
+    else strAlg += alg[i];
+  }
+  return strAlg;
 }
 
 // Draw function
@@ -91,14 +113,16 @@ void draw() {
   textSize(22);
   text("Use the keyboard keys to rotate each face", 90, 25);
   text(" (Lowercase letters to rotate counter-clockwise)", 60, 50);
+  text(" Press [ENTER] to scramble the cube", 115, 75);
+  text(" Press [S] to scan the cube using the camera", 85, 100);
   if (cube.isSolved()) {
     textSize(42);
     text("Solved!",  360, 535);
   } else {
       if (solAlg != null) {
         textSize(20);
-        textSize(map(textWidth(String.valueOf(solAlg)), 0, width-20, 50, 10));
-        text("Solution: " + String.valueOf(solAlg), 10, 585);
+        textSize(map(textWidth(algToStandardStr(solAlg)), 0, width-20, 50, 10));
+        text("Solution: " + algToStandardStr(solAlg), 10, 585);
         textSize(25); 
         text("[<] & [>] for prev or next move", 210, 500); 
         text("[SPACE]  to autosolve the cube", 210, 530); 
