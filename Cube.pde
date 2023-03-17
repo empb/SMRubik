@@ -103,6 +103,7 @@ class Cube {
     if (stderrr.size() != 0) {
       println("Errors while solving the cube:");
       println(stderrr);
+      return null;
     }
     return stdoutt.get(0);
   }
@@ -112,18 +113,23 @@ class Cube {
   String scanCube() {
     if (this.isMoving()) return null;  // If cube is moving, return
     StringList stdoutt = new StringList(), stderrr = new StringList();
-    int r = exec(stdoutt, stderrr, "python3.8", sketchPath()+"/python/scanCube.py");
+    int r = exec(stdoutt, stderrr, "python3.8", sketchPath()+"/python/scanCube.py", 
+                "--model=" + sketchPath() + "/python/models/model1.png");
     if (r != 0) {
       println("Error while calling scanCube.py:"); 
-      println(stderrr.get(stderrr.size() - 1));
+      println(stderrr);
+      println(stdoutt);
       return null;
     }
     if (stderrr.size() != 0) {
       println("Errors while solving the cube:");
       println(stderrr);
+      return null;
     }
     if (stdoutt.size() > 1) {
-      String solutionAlg = stdoutt.get(1);
+      String solutionAlg = stdoutt.get(stdoutt.size() - 1);
+      if (solutionAlg.equals("Scan error") 
+        || solutionAlg.equals("Program terminated")) return null;
       // To take the cube to this state, we solve it and then
       // we apply this alogrithm in inverse order
       if (!this.isSolved()) {

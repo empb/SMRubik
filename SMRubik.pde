@@ -1,5 +1,3 @@
-/* Thanks to The Coding Train for motivating this project */
-
 import peasy.*;
 
 PeasyCam cam;
@@ -32,34 +30,34 @@ void setup() {
 // If key is pressed, it applies the action
 void keyPressed() {
   switch(keyCode) {
-    case UP: cam.reset(); break;
-    case DOWN: cam.rotateX(PI/4); break;
-    case ENTER: solAlg = null; scrambleCube(cube); break;
-    case RIGHT: 
+    case UP: cam.reset(); break;          // Restores the cam
+    case DOWN: cam.rotateX(PI/4); break;  // Rotates down the cam
+    case 'S': solAlg = null; scrambleCube(cube); break;  // Scrambles cube
+    case RIGHT:   // Apply next move
       if (solAlg != null && cMove < solAlg.length) {
         applyKey(solAlg[cMove], cube);    // Controls function
         cMove++;
       }
       break;
-    case LEFT:
+    case LEFT:  // Apply previous move
       if (solAlg != null && cMove > 0) {
         cMove--;
         applyKey(oppMove(solAlg[cMove]), cube);    // Controls function
       }
       break;
-    case ' ': 
+    case ' ':     // Finds cube solution
       if (solAlg == null) {;
         String solMoves = cube.solveCube();
         if (solMoves != null) {
           solAlg = solMoves.toCharArray();
           cMove = 0;
         }
-      } else {
+      } else {  // Autosolve
         applyAlgorithm(subset(solAlg, cMove), cube, 0.025);  // Controls function
         solAlg = null;
       }
       break;
-    case 'S':
+    case ENTER:  // Scans the cube from camera
         String solMoves = cube.scanCube();
         if (solMoves != null) {
           solAlg = solMoves.toCharArray();
@@ -113,8 +111,8 @@ void draw() {
   textSize(22);
   text("Use the keyboard keys to rotate each face", 90, 25);
   text(" (Lowercase letters to rotate counter-clockwise)", 60, 50);
-  text(" Press [ENTER] to scramble the cube", 115, 75);
-  text(" Press [S] to scan the cube using the camera", 85, 100);
+  text(" Press [S] to scramble the cube", 132, 75);
+  text(" Press [ENTER] to scan the cube using the camera", 67, 100);
   if (cube.isSolved()) {
     textSize(42);
     text("Solved!",  360, 535);
